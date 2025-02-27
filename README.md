@@ -2,7 +2,7 @@
 
 Este repositorio contiene dos ejemplos de código para la comunicación serial utilizando módulos XBee y la librería SoftwareSerial en Arduino.
 
-## Ejemplo 1: Lectura de Mensajes desde XBee
+## Parte 1 (recibe): Lectura de Mensajes desde XBee
 
 ### Descripción
 
@@ -54,7 +54,7 @@ void loop() {
   }
 }
 ```
-# Ejemplo 2: Envío de Números Aleatorios a través de XBee
+# PARTE 2 (envia): Envío de Números Aleatorios a través de XBee
 ## Descripción
 Este ejemplo de código muestra cómo enviar números aleatorios generados en el Arduino a través de un módulo XBee. Los números se generan entre 0 y 255 y se envían con marcadores de inicio < y fin > para delimitar cada mensaje.
 
@@ -64,44 +64,28 @@ Este ejemplo de código muestra cómo enviar números aleatorios generados en el
 ```cpp
 #include <SoftwareSerial.h>          // Incluir librería SoftwareSerial para comunicación
  
-SoftwareSerial XBee(10, 11);         // RX = 10, TX = 11
-
-bool started = false;                // Verdadero cuando se detecta el marcador de inicio
-bool ended = false;                  // Verdadero cuando se detecta el marcador de fin
-char incomingByte;                   // Almacenamiento para cada byte leído
-char msg[4];                         // Array para ensamblar el mensaje entrante
-byte index = 0;                      // Posición actual en el array
+SoftwareSerial XBee(10, 11);         // Definir pines de SoftwareSerial: RX = 10, TX = 11
 
 void setup() {
   Serial.begin(115200);              // Iniciar comunicación con la PC para depuración
   XBee.begin(115200);                // Iniciar comunicación con el módulo XBee
+
+  randomSeed(analogRead(0));         // Semilla para el generador de números aleatorios para obtener resultados variados
 }
 
 void loop() {
-  while (XBee.available() > 0) {     // Comprobar si hay datos disponibles del XBee
-    incomingByte = XBee.read();      // Leer el byte entrante
+  int randomNumber = random(256);    // Generar un número aleatorio entre 0 y 255
+  
+  XBee.print('<');                   // Marcador de inicio de transmisión
+  XBee.print(randomNumber);          // Enviar el número generado aleatoriamente
+  XBee.println('>');                 // Marcador de fin de transmisión
 
-    if (incomingByte == '<') {       // Detectar inicio del mensaje
-      started = true;
-      index = 0;
-      msg[index] = '\0';             // Limpiar el buffer
-    } else if (incomingByte == '>') { // Detectar fin del mensaje
-      ended = true;
-      break;                         // Dejar de leer, procesar el mensaje
-    } else if (started && index < 3) { // Almacenar el byte en el array msg si el mensaje ha comenzado
-      msg[index] = incomingByte;
-      index++;
-      msg[index] = '\0';             // Terminar la cadena con nulo
-    }
-  }
+  Serial.print("Envia numero: ");    // Salida de depuración al Monitor Serial
+  Serial.println(randomNumber);
 
-  if (started && ended) {            // Si se recibió un mensaje completo, procesarlo
-    int value = atoi(msg);           // Convertir el buffer a un entero
-    Serial.print("Recibido: ");      // Salida de depuración al Monitor Serial
-    Serial.println(value);
-
-    started = false;                 // Reiniciar para el próximo mensaje
-    ended = false;
-  }
+  delay(1000);                       // Retraso entre envíos para evitar saturación
 }
+
 ```
+
+### Espero estos codigos les sean de utilidad.
