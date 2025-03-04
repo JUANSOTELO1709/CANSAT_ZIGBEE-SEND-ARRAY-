@@ -1,4 +1,4 @@
-#include <SoftwareSerial.h>         // incluir librería SoftwareSerial para comunicación
+#include <SoftwareSerial.h>         // Incluir librería SoftwareSerial para comunicación
  
 SoftwareSerial XBee(10, 11);        // RX = 10, TX = 11
  
@@ -14,31 +14,37 @@ void setup() {
 }
  
 void loop() {
-  while (XBee.available() > 0) {    // Comprobar si hay datos disponibles del XBee
-    incomingByte = XBee.read();     // Leer el byte entrante
+  while (XBee.available() > 0) {      // Comprobar si hay datos disponibles del XBee
+    incomingByte = XBee.read();       // Leer el byte entrante
  
-    if (incomingByte == '<') {      // Detectar inicio del mensaje
+    if (incomingByte == '<') {        // Detectar inicio del mensaje
       started = true;
       index = 0;
-      msg[index] = '\0';            // Limpiar el buffer
+      msg[index] = '\0';              // Limpiar el buffer
     }
-    else if (incomingByte == '>') { // Detectar fin del mensaje
+    else if (incomingByte == '>') {   // Detectar fin del mensaje
       ended = true;
-      break;                        // Dejar de leer, procesar el mensaje
+      break;                          // Dejar de leer, procesar el mensaje
     }
-    else if (started && index < 3) { // Almacenar el byte en el array msg si el mensaje ha comenzado
+    else if (started && index < 3) {  // Almacenar el byte en el array msg si el mensaje ha comenzado
       msg[index] = incomingByte;
       index++;
-      msg[index] = '\0';            // Terminar la cadena con nulo
+      msg[index] = '\0';              // Terminar la cadena con nulo
     }
   }
  
-  if (started && ended) {           // Si se recibió un mensaje completo, procesarlo
-    int value = atoi(msg);          // Convertir el buffer a un entero
-    Serial.print("Recibido: ");     // Salida de depuración al Monitor Serial
+  if (started && ended) {             // Si se recibió un mensaje completo, procesarlo
+    int value = atoi(msg);            // Convertir el buffer a un entero
+    Serial.print("Recibido: ");       // Salida de depuración al Monitor Serial
     Serial.println(value);
  
-    started = false;                // Reiniciar para el próximo mensaje
+    if (value == 1) {
+      Serial.println("Motor a la derecha");
+    } else if (value == 2) {
+      Serial.println("Motor a la izquierda");
+    }
+
+    started = false;                  // Reiniciar para el próximo mensaje
     ended = false;
   }
 }
