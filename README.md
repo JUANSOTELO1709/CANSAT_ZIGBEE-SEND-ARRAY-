@@ -1,1 +1,1 @@
-este dato esta implementado en el repostorio "pruebas zignie"
+este dato esta implementado en el repostorio "pruebas "
