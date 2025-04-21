@@ -1,1 +1,1 @@
-Este dato esta implementado en el repostorio "pruebas "
+Este dato esta implementado en el repostorio "pruebas"
