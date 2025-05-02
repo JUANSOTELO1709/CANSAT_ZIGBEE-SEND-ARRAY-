@@ -1,5 +1,6 @@
-Este dato esta implementado en el repostorio 
+## Este dato esta implementado en el repostorio 
 
-## "pruebas"
+
+## "PRUEBAS"
 
 Todo es bajo el modulo Zigbee S2
